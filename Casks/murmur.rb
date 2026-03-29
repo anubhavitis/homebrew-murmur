@@ -1,23 +1,17 @@
 cask "murmur" do
-  version "0.2.1"
-  sha256 "93bb8132e927aacef2b85ff04137ebac6415e45faab688bcbabb7a13aba5909c"
+  version "0.2.2"
+  sha256 "c001bf492b1b670b4b0282fd5312d3f6f6d0f5289066899caa68ede78234d05a"
 
-  url "https://github.com/anubhavitis/murmur/releases/download/v#{version}/murmur-#{version}-aarch64-apple-darwin.tar.gz"
+  url "https://github.com/anubhavitis/murmur/releases/download/v#{version}/murmur-#{version}-aarch64-apple-darwin.zip"
   name "Murmur"
   desc "Local speech-to-text from your menubar"
   homepage "https://github.com/anubhavitis/murmur"
 
   depends_on arch: :arm64
 
-  preflight do
-    system_command "/bin/mkdir", args: ["-p", "#{Dir.home}/.murmur/bin"]
-  end
-
-  artifact "murmur", target: "#{Dir.home}/.murmur/bin/murmur"
+  app "Murmur.app"
 
   postflight do
-    system_command "/usr/bin/xattr", args: ["-cr", "#{Dir.home}/.murmur/bin/murmur"]
-
     plist_content = <<~XML
       <?xml version="1.0" encoding="UTF-8"?>
       <!DOCTYPE plist PUBLIC "-//Apple//DTD PLIST 1.0//EN" "http://www.apple.com/DTDs/PropertyList-1.0.dtd">
@@ -26,7 +20,7 @@ cask "murmur" do
           <key>Label</key>
           <string>com.murmur.app</string>
           <key>Program</key>
-          <string>#{Dir.home}/.murmur/bin/murmur</string>
+          <string>/Applications/Murmur.app/Contents/MacOS/murmur</string>
           <key>RunAtLoad</key>
           <true/>
           <key>KeepAlive</key>
@@ -48,6 +42,14 @@ cask "murmur" do
 
     plist_path = "#{Dir.home}/Library/LaunchAgents/com.murmur.app.plist"
     File.write(plist_path, plist_content)
+
+    system_command "/bin/mkdir", args: ["-p", "#{Dir.home}/.murmur"]
+
+    old_bin = "#{Dir.home}/.murmur/bin/murmur"
+    File.delete(old_bin) if File.exist?(old_bin)
+    old_bin_dir = "#{Dir.home}/.murmur/bin"
+    Dir.rmdir(old_bin_dir) rescue nil
+
     system_command "/bin/launchctl", args: ["load", plist_path]
   end
 
@@ -55,10 +57,7 @@ cask "murmur" do
     executable: "/bin/launchctl",
     args: ["unload", "#{Dir.home}/Library/LaunchAgents/com.murmur.app.plist"],
   },
-  delete: [
-    "#{Dir.home}/.murmur/bin/murmur",
-    "#{Dir.home}/Library/LaunchAgents/com.murmur.app.plist",
-  ]
+  delete: "#{Dir.home}/Library/LaunchAgents/com.murmur.app.plist"
 
   zap delete: "#{Dir.home}/.murmur"
 end
