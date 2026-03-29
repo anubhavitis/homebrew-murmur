@@ -1,6 +1,6 @@
 cask "murmur" do
-  version "0.2.0"
-  sha256 "32b119a41f9bed45ef387e4e9014f17273e504bd16934c279cf2edce404e5971"
+  version "0.2.1"
+  sha256 "93bb8132e927aacef2b85ff04137ebac6415e45faab688bcbabb7a13aba5909c"
 
   url "https://github.com/anubhavitis/murmur/releases/download/v#{version}/murmur-#{version}-aarch64-apple-darwin.tar.gz"
   name "Murmur"
