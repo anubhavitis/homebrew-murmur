@@ -1,6 +1,6 @@
 cask "murmur" do
-  version "0.2.2"
-  sha256 "c001bf492b1b670b4b0282fd5312d3f6f6d0f5289066899caa68ede78234d05a"
+  version "0.2.3"
+  sha256 "ebca66a4ac60ad2c0e0f600d754792464085f60ff21344a6f2cf7220b1145fea"
 
   url "https://github.com/anubhavitis/murmur/releases/download/v#{version}/murmur-#{version}-aarch64-apple-darwin.zip"
   name "Murmur"
@@ -8,6 +8,11 @@ cask "murmur" do
   homepage "https://github.com/anubhavitis/murmur"
 
   depends_on arch: :arm64
+
+  preflight do
+    system_command "/bin/launchctl", args: ["unload", "#{Dir.home}/Library/LaunchAgents/com.murmur.app.plist"]
+    system_command "/usr/bin/xattr", args: ["-cr", "#{staged_path}/Murmur.app"]
+  end
 
   app "Murmur.app"
 
