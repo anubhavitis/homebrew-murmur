@@ -25,7 +25,7 @@ cask "murmur" do
           <key>Label</key>
           <string>com.murmur.app</string>
           <key>Program</key>
-          <string>/Applications/Murmur.app/Contents/MacOS/murmur</string>
+          <string>#{appdir}/Murmur.app/Contents/MacOS/murmur</string>
           <key>RunAtLoad</key>
           <true/>
           <key>KeepAlive</key>
@@ -46,6 +46,7 @@ cask "murmur" do
     XML
 
     plist_path = "#{Dir.home}/Library/LaunchAgents/com.murmur.app.plist"
+    system_command "/bin/mkdir", args: ["-p", "#{Dir.home}/Library/LaunchAgents"]
     File.write(plist_path, plist_content)
 
     system_command "/bin/mkdir", args: ["-p", "#{Dir.home}/.murmur"]
